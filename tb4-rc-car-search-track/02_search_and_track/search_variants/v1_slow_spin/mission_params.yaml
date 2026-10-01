@@ -1,0 +1,58 @@
+mission_trigger_node:
+  ros__parameters:
+    trigger_topic: "/webcam/rc_car_detected"
+    action_name: "/search_and_track"
+    # search_pose = [x, y, yaw(rad)] in the map frame.
+    # Centre of the region the webcam watches (clicked corners were roughly
+    # x[-2.5..-1.5], y[-1.8..0.6]). Verify it is on free space in RViz.
+    search_pose: [-2.0, -0.6, 0.0]
+    stop_distance: 0.30
+    spin_angle: 6.2832            # 360 deg
+    goal_update_distance: 0.25
+    target_lost_timeout: 5.0
+    return_to_dock_on_finish: false
+
+search_and_track_server:
+  ros__parameters:
+    robot_namespace: "/robot2"
+    # leave "" to auto-derive from robot_namespace:
+    rgb_topic: ""                 # -> <ns>/oakd/rgb/image_raw/compressed  (full RGB)
+    depth_topic: ""               # -> <ns>/oakd/stereo/image_raw/compressedDepth (decoded in-node)
+    info_topic: ""                # -> <ns>/oakd/rgb/camera_info
+    camera_frame: "oakd_rgb_camera_optical_frame"   # depth aligned to RGB; verified on robot2
+    map_frame: "map"
+    robot_base_frame: "base_link"   # TB4 TF frames are NOT namespaced on this robot  (confirmed by a teammate's TF check)
+
+    model_path: "rc_dummy_y11n.pt"   # bare name -> rc_tracker/models/ (custom: classes RC, dummy)
+    tracker_cfg: "bytetrack.yaml"
+    target_class: "RC"
+    conf_threshold: 0.5
+    lock_consecutive_frames: 2       # v1..v4: relaxed from 3 -> 2
+
+    depth_min_m: 0.2
+    depth_max_m: 5.0
+    stop_distance_m: 0.30
+    stop_hysteresis_m: 0.10
+    goal_update_distance_m: 0.25
+    follow_period_s: 0.5
+    spin_angle_rad: 6.2832
+    target_lost_timeout_s: 5.0
+    hold_finish_s: 5.0
+    perceive_rate_hz: 10.0
+
+    set_initial_pose: true         # dock = map origin (SLAM start); auto-inject on each goal
+    initial_pose: [0.00065, -0.041, 2.382448]  # UNDOCKED pose (x,y from amcl_pose; yaw = docked yaw, refine after undock)
+    relock_on_reacquire: true      # on loss, re-lock whatever RC is most central
+    lock_on_start: true            # lock an RC immediately (standalone test); mission goal resets it
+
+    # ================= SEARCH-PHASE TUNING (v1 = SLOW CONTINUOUS SPIN) =================
+    search_strategy: "v1_slow_spin"
+    search_yaw_rate: 0.30          # [rad/s] in-place turn speed during SEARCHING (baseline Nav2 spin was ~1.0)
+    search_conf_threshold: 0.30    # lower YOLO conf only while searching (blurry frames); 0 -> reuse conf_threshold
+    search_rgb_only: false         # v1 keeps the RGB+depth synced pair
+    use_stamped_cmd_vel: true      # TB4 Jazzy cmd_vel is TwistStamped; set false if the base wants plain Twist
+    perception_stale_s: 1.5        # APPROACH/FOLLOW: freeze the goal if the newest image pair is older than this
+    # (v2/v3 params below are ignored by v1)
+    scan_step_deg: 30.0
+    scan_dwell_s: 0.8
+    confirm_timeout_s: 3.0

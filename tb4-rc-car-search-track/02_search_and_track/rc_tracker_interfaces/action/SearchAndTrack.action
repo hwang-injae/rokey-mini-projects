@@ -1,0 +1,38 @@
+# ============================ Goal ============================
+geometry_msgs/PoseStamped search_pose        # webcam 이 바라보는 장소의 대략 좌표 (map frame)
+float32 stop_distance          # [m] RC카 정지/유지 거리        (<=0 이면 서버 기본값 사용)
+float32 spin_angle             # [rad] 탐색 회전각 (기본 6.2832) (<=0 이면 서버 기본값 사용)
+float32 goal_update_distance   # [m] target 이 이만큼 움직이면 Nav2 goal 재전송 (<=0 -> 기본값)
+float32 target_lost_timeout    # [s] target 미검출 지속 시 재탐색/종료 판단 (<=0 -> 기본값)
+bool    return_to_dock_on_finish
+---
+# ============================ Result ============================
+uint8 OUTCOME_UNKNOWN=0
+uint8 OUTCOME_STOPPED_AT_TARGET=1   # stop_distance 도달·유지 후 정상 종료 (cancel 포함)
+uint8 OUTCOME_TARGET_NOT_FOUND=2    # 360° 회전 완료했으나 car 미발견
+uint8 OUTCOME_TARGET_LOST=3         # 고정 후 timeout 이상 재검출 실패
+uint8 OUTCOME_NAV_FAILED=4          # search_pose 이동 실패
+uint8 OUTCOME_ABORTED=5
+
+uint8                     outcome
+int32                     target_track_id   # 고정된 track id (-1 = 끝까지 미고정)
+geometry_msgs/PoseStamped final_pose        # 종료 시 로봇 pose (map)
+float32                   final_distance     # 마지막으로 측정한 RC카 거리 [m]
+string                    message
+---
+# ============================ Feedback ============================
+uint8 PHASE_IDLE=0
+uint8 PHASE_UNDOCKING=1
+uint8 PHASE_NAV_TO_SEARCH=2
+uint8 PHASE_SEARCHING=3       # 360° 회전 + 감지
+uint8 PHASE_APPROACHING=4     # target 고정, 접근 주행
+uint8 PHASE_FOLLOWING=5       # 이동하는 target 추종 (stop_distance 근처)
+uint8 PHASE_HOLDING=6         # stop_distance 이내, target 정지 -> 대기
+uint8 PHASE_DOCKING=7
+
+uint8                phase
+int32                target_track_id
+float32              distance_remaining     # 현재 Nav2 goal 까지 남은 거리 [m]
+float32              target_distance        # depth 기준 RC카까지 거리 [m] (-1 = 미상)
+geometry_msgs/Point  target_position_map    # target 현재 map 좌표
+float32              search_progress        # 0.0 ~ 1.0 (회전 진행률)

@@ -1,0 +1,29 @@
+[INFO] [1789551198.967902028] [dsr01.rokey_gear_pick_place]: 컨트롤러 연결 확인
+[INFO] [1789551199.094427341] [dsr01.rokey_gear_pick_place]: set_tool=0, set_tcp=0  (0=성공, -1=실패: 펜던트 이름 확인)
+[INFO] [1789551199.297051460] [dsr01.rokey_gear_pick_place]: === 기어 1 이동 ===
+[INFO] [1789551200.596961960] [dsr01.rokey_gear_pick_place]: grasp
+[INFO] [1789551205.397054659] [dsr01.rokey_gear_pick_place]: release
+[INFO] [1789551208.497018623] [dsr01.rokey_gear_pick_place]: === 기어 2 이동 ===
+[INFO] [1789551210.496920289] [dsr01.rokey_gear_pick_place]: grasp
+[INFO] [1789551215.197065076] [dsr01.rokey_gear_pick_place]: release
+[INFO] [1789551218.197436027] [dsr01.rokey_gear_pick_place]: === 기어 3 이동 ===
+[INFO] [1789551219.797028095] [dsr01.rokey_gear_pick_place]: grasp
+[INFO] [1789551224.497482598] [dsr01.rokey_gear_pick_place]: release
+[INFO] [1789551227.497322074] [dsr01.rokey_gear_pick_place]: === 기어 4 이동 (힘제어 삽입) ===
+[INFO] [1789551229.197146127] [dsr01.rokey_gear_pick_place]: grasp
+[INFO] [1789551234.398468503] [dsr01.rokey_gear_pick_place]: 접촉 전 힘: [-0.7013344764709473, -2.770665168762207, 1.314061164855957, 1.1082990169525146, 0.08079629391431808, 0.3506517708301544]
+[INFO] [1789551234.401827910] [dsr01.rokey_gear_pick_place]: 현재 위치: [574.302, -150.106, 86.458, 93.064, -178.426, 104.021]
+[INFO] [1789551234.477923377] [dsr01.rokey_gear_pick_place]: compliance=0, stiffness=0, desired_force=0  (0=성공, -1=실패)
+[INFO] [1789551234.981746962] [dsr01.rokey_gear_pick_place]: Fz=2.2N  Z=85.6mm
+[INFO] [1789551235.087465271] [dsr01.rokey_gear_pick_place]: Fz=2.3N  Z=85.5mm
+[INFO] [1789551235.192921174] [dsr01.rokey_gear_pick_place]: Fz=2.3N  Z=85.3mm
+[INFO] [1789551235.299159261] [dsr01.rokey_gear_pick_place]: Fz=2.3N  Z=85.1mm
+[INFO] [1789551235.405504944] [dsr01.rokey_gear_pick_place]: Fz=2.3N  Z=84.8mm
+[INFO] [1789551235.511977863] [dsr01.rokey_gear_pick_place]: Fz=2.3N  Z=84.6mm
+[INFO] [1789551235.621052180] [dsr01.rokey_gear_pick_place]: Fz=2.9N  Z=84.5mm
+[INFO] [1789551235.726624114] [dsr01.rokey_gear_pick_place]: Fz=3.1N  Z=84.5mm
+[INFO] [1789551235.729690878] [dsr01.rokey_gear_pick_place]: 힘 조건 만족 → 흔들기 시작
+[INFO] [1789551238.200658521] [dsr01.rokey_gear_pick_place]: Fz=1.8N  Z=80.1mm
+[INFO] [1789551238.307893768] [dsr01.rokey_gear_pick_place]: Fz=1.8N  Z=79.9mm
+[INFO] [1789551238.310784489] [dsr01.rokey_gear_pick_place]: 삽입 완료 → 그리퍼 열기
+[INFO] [1789551241.021418474] [dsr01.rokey_gear_pick_place]: 작업 완료

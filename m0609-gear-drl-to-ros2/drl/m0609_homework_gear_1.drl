@@ -1,0 +1,146 @@
+## Title : m0609_homework_gear_1
+## Time : 2026-09-16 09:24:11
+
+
+def grasp():
+    global System_pos1
+    global System_pos2
+    global System_cnt
+    global System_p1
+    global System_p
+    global System_g1
+    global System_gt1
+    global System_g2
+    global System_gt2
+    global System_g3
+    global System_gt3
+    global System_g4
+    global System_gt4
+    global System_gt1j
+    global System_gt2j
+    global System_gj1
+    global System_gtj1
+    global System_gj2
+    global System_gtj2
+    global System_gj3
+    global System_gj4
+    global System_gtj3
+    global System_gtj4
+    # MoveLNode
+    movel(posx(0.00, 0.00, -50.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1500.00, 570.00], radius=10.00, ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    # SetNode
+    set_digital_output(1,ON)
+    # SetNode
+    set_digital_output(2,OFF)
+    # MotionWaitNode
+    mwait(time=0.25)
+    # MoveLNode
+    movel(posx(0.00, 0.00, 50.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1500.00, 570.00], radius=10.00, ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    
+_alias_sub_name_grasp = grasp
+
+def release():
+    global System_pos1
+    global System_pos2
+    global System_cnt
+    global System_p1
+    global System_p
+    global System_g1
+    global System_gt1
+    global System_g2
+    global System_gt2
+    global System_g3
+    global System_gt3
+    global System_g4
+    global System_gt4
+    global System_gt1j
+    global System_gt2j
+    global System_gj1
+    global System_gtj1
+    global System_gj2
+    global System_gtj2
+    global System_gj3
+    global System_gj4
+    global System_gtj3
+    global System_gtj4
+    # MoveLNode
+    movel(posx(0.00, 0.00, -50.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1500.00, 570.00], radius=10.00, ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    # SetNode
+    set_digital_output(1,OFF)
+    # SetNode
+    set_digital_output(2,ON)
+    # MotionWaitNode
+    mwait(time=0.25)
+    # MoveLNode
+    movel(posx(0.00, 0.00, 50.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1500.00, 570.00], radius=10.00, ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    
+_alias_sub_name_release = release
+
+set_singular_handling(DR_AVOID)
+set_velj(60.0)
+set_accj(100.0)
+set_velx(500.0, 101.25, DR_OFF)
+set_accx(1000.0, 405.0)
+gLoop092411389 = 0
+while gLoop092411389 < 1:
+    # MoveJNode
+    movej(posj(0.00, 0.00, 90.00, 0.00, 90.00, 0.00), vel=150.00, acc=100.00, radius=0.00, ra=DR_MV_RA_DUPLICATE)
+    # MoveJNode
+    movej(System_gj1, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_grasp()
+    # MoveJNode
+    movej(System_gtj1, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_release()
+    # MoveJNode
+    movej(System_gj2, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_grasp()
+    # MoveJNode
+    movej(System_gtj2, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_release()
+    # MoveJNode
+    movej(System_gj3, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_grasp()
+    # MoveJNode
+    movej(System_gtj3, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_release()
+    # MoveJNode
+    movej(System_gj4, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # CallNode
+    _alias_sub_name_grasp()
+    # MoveJNode
+    movej(System_gtj4, vel=150.00, acc=150.00, radius=10.00, ra=DR_MV_RA_DUPLICATE)
+    # MoveLNode
+    movel(posx(0.00, 0.00, -30.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1000.00, 570.00], radius=0.00, ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    # ComplianceNode
+    task_compliance_ctrl()
+    set_stiffnessx([3000.00, 3000.00, 3000.00, 200.00, 200.00, 200.00],time=0.0)
+    # ForceNode
+    set_desired_force([0.00, 0.00, -10.00, 0.00, 0.00, 0.00],[0,0,1,0,0,0],time=0.0,mod=DR_FC_MOD_REL)
+    # MoveLNode
+    amovel(posx(0.00, 0.00, -20.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1000.00, 570.00], ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    # RepeatNode
+    while True:
+        if check_force_condition(DR_AXIS_Z, min=7, max=12, ref=DR_BASE):
+            move_periodic(amp=[0.00, 0.00, 0.00, 0.00, 0.00, 10.00], period=[0.00, 0.00, 0.00, 0.00, 0.00, 1.00], atime=1.00, repeat=3, ref=1)
+            
+        if check_position_condition(DR_AXIS_Z, max=80, ref=DR_BASE, mod = DR_MV_MOD_ABS, pos=None):
+            break
+            
+        
+    # CallNode
+    _alias_sub_name_release()
+    # ForceNode
+    release_force(time=0.0)
+    # ComplianceNode
+    release_compliance_ctrl()
+    # MoveLNode
+    movel(posx(0.00, 0.00, 50.00, 0.00, 0.00, 0.00), vel=[1000.00, 142.50], acc=[1000.00, 570.00], radius=10.00, ref=0, mod=DR_MV_MOD_REL, ra=DR_MV_RA_DUPLICATE, app_type=DR_MV_APP_NONE)
+    # MoveJNode
+    movej(posj(0.00, 0.00, 90.00, 0.00, 90.00, 0.00), vel=90.00, acc=100.00, radius=0.00, ra=DR_MV_RA_DUPLICATE)
+    gLoop092411389 = gLoop092411389 + 1

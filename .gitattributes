@@ -1,0 +1,4 @@
+*.drl -text
+*.drvar -text
+*.pt binary
+*.gif binary

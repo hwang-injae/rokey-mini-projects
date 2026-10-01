@@ -1,0 +1,57 @@
+mission_trigger_node:
+  ros__parameters:
+    trigger_topic: "/webcam/rc_car_detected"
+    action_name: "/search_and_track"
+    search_pose: [-2.0, -0.6, 0.0]
+    stop_distance: 0.30
+    spin_angle: 6.2832            # 360 deg
+    goal_update_distance: 0.25
+    target_lost_timeout: 5.0
+    return_to_dock_on_finish: false
+
+search_and_track_server:
+  ros__parameters:
+    robot_namespace: "/robot2"
+    rgb_topic: ""
+    depth_topic: ""
+    info_topic: ""
+    camera_frame: "oakd_rgb_camera_optical_frame"
+    map_frame: "map"
+    robot_base_frame: "base_link"
+
+    model_path: "rc_dummy_y11n.pt"
+    tracker_cfg: "bytetrack.yaml"
+    target_class: "RC"
+    conf_threshold: 0.5
+    lock_consecutive_frames: 2       # v1..v4: relaxed from 3 -> 2
+
+    depth_min_m: 0.2
+    depth_max_m: 5.0
+    stop_distance_m: 0.30
+    stop_hysteresis_m: 0.10
+    goal_update_distance_m: 0.25
+    follow_period_s: 0.5
+    spin_angle_rad: 6.2832
+    target_lost_timeout_s: 5.0
+    hold_finish_s: 5.0
+    perceive_rate_hz: 10.0
+
+    set_initial_pose: true
+    initial_pose: [0.00065, -0.041, 2.382448]
+    relock_on_reacquire: true
+    lock_on_start: true
+
+    # ================= SEARCH-PHASE TUNING (v4 = RGB-ONLY LOCK) =================
+    # Same slow manual spin as v1, but during SEARCHING the lock runs off an
+    # RGB-only image stream so a lagging /oakd/stereo/.../compressedDepth cannot
+    # starve perception. A/B this against v1 to check whether depth
+    # transport lag caused the lock failure in the integration test.
+    search_strategy: "v4_rgb_only"
+    search_yaw_rate: 0.30
+    search_rgb_only: true         # <-- the switch that makes v4 different from v1
+    search_conf_threshold: 0.30
+    use_stamped_cmd_vel: true
+    perception_stale_s: 1.5      # APPROACH/FOLLOW: freeze the goal if the newest image pair is older than this
+    scan_step_deg: 30.0          # (ignored by v4)
+    scan_dwell_s: 0.8            # (ignored by v4)
+    confirm_timeout_s: 3.0       # (ignored by v4)

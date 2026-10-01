@@ -1,0 +1,11 @@
+webcam_detector_node:
+  ros__parameters:
+    camera_index: 0
+    model_path: "rc_dummy_y11n.pt"   # bare name -> rc_tracker/models/ (custom: classes RC, dummy)
+    target_class: "RC"
+    conf_threshold: 0.5
+    consecutive_frames: 5           # frames in a row before firing the trigger
+    frame_rate: 15.0
+    publish_debug_image: true
+    trigger_topic: "/webcam/rc_car_detected"
+    debug_topic: "/webcam/image_raw/compressed"
