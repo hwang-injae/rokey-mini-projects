@@ -6,6 +6,7 @@
 | 미니프로젝트 | 내용 | 스택 | 상태 |
 |---|---|---|---|
 | [M0609 기어 조립: DRL → ROS 2 Python](m0609-gear-drl-to-ros2/) | 티치 펜던트로 만든 기어 조립 동작을 ROS 2 Python 노드로 옮기면서 달라진 점을 고쳐 실제 로봇에서 끝까지 동작 | Doosan M0609 · RG2 · DSR_ROBOT2 · 힘제어 | ✅ 실로봇 완주 1회 |
+| [Isaac Sim M0609 색상 분류](isaac-m0609-color-sort/) | 시뮬레이션 속 로봇팔이 큐브 색에 맞는 마커로 옮기도록, 카메라 영상에서 파랑·초록을 판별해 돌려주는 ROS 2 색 감지 노드 | Isaac Sim · ROS 2 · OpenCV(HSV) | ✅ 전체 동작 확인 |
 | [TurtleBot4 RC카 탐색·추적](tb4-rc-car-search-track/) | 웹캠이 RC카를 인식하면 AMR이 출동해 회전 탐색 후 추종하는 4인 팀 미니프로젝트 (담당: 웹캠 RC카·더미 박스 인식) | TurtleBot4 · Nav2 · YOLO11n · ByteTrack | 🟡 미완성 (탐색 위치 이동까지, lock 실패) |
 
 > 메인 팀 프로젝트는 [프로필](https://github.com/hwang-injae)에서 볼 수 있습니다.
