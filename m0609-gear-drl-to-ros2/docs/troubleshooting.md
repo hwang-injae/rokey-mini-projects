@@ -1,10 +1,10 @@
 # DRL → ROS 2 Python 변환 트러블슈팅 (M0609 기어 조립)
 
-- 원본: 티치 펜던트(Task Writer)로 만든 `m0609_homework_gear_1` ([`../drl/`](../drl/): `.drl` + `System.drvar`)
+- 원본: 티치 펜던트(Task Writer)로 만든 `m0609_homework_gear_1` ([`../src/drl/`](../src/drl/): `.drl` + `System.drvar`)
 - 변환 결과: [`../src/my_gear.py`](../src/my_gear.py) (ROS 2 Jazzy, `dsr_controller2`, `DSR_ROBOT2` 라이브러리)
 - 로봇: Doosan M0609 + OnRobot RG2 (컨트롤러 디지털 출력으로 열고 닫음)
 - 작업: 기어 3개 옮기기 → 4번째 기어를 순응·힘제어 + Z축 회전 흔들기로 맞물려 끼우기
-- 근거: 2026-09-16 오후 실로봇 실행 19회의 노드 로그와 브링업 터미널 알람([`../logs/`](../logs/))
+- 근거: 2026-09-16 오후 실로봇 실행 19회의 노드 로그와 브링업 터미널 알람([`logs/`](logs/))
 
 펜던트에서 만든 프로그램을 Python으로 옮기자 **그리퍼 타이밍, 힘제어 조건, 홈 복귀**가 모두 어긋났다.
 원인은 크게 두 가지였다.
@@ -13,6 +13,30 @@
 - 디버깅하면서 바꾼 **테스트 값과 편집 실수**가 만든 문제 (8~12번)
 
 > 추정이라고 적은 항목은 로그로 원인을 하나로 확정하지 못한 것이다.
+
+---
+
+## 한눈에 보기
+
+### DRL ↔ ROS 2 Python 차이 (옮기면서 드러난 것)
+
+| 증상 | 원인 | 고친 방법 | 항목 |
+|---|---|---|---|
+| 그리퍼가 닫히기 전에 팔이 올라감 | ROS 2의 `mwait(time)`은 시간 인자를 쓰지 않고 모션 완료만 기다림(라이브러리 소스 주석으로 확인) | 그리퍼 대기는 `wait(2)` | 2 |
+| 조건이 안 맞는데 흔들기가 실행되고 반복문이 바로 끝남 → 원본 `release()`의 50mm 하강으로 바닥 충돌(`Collision occurred at Joint Axis2`, 4회) | `check_force_condition`/`check_position_condition`이 참=0, 거짓=-1을 돌려줌. Python에서 `if -1:`은 참 | `== 0`으로 비교, 힘은 `get_tool_force()` 값으로 직접 판정, 삽입 후엔 하강 없이 그리퍼만 열기 | 4, 5 |
+| `set_tool`/`set_tcp`가 -1, 접촉 전 Fz가 약 -12N이고 Z가 약 208mm 높게 나옴 | 이 함수들은 수동 모드에서만 받음(알람 `this command can only be used in manual mode`). 브링업을 다시 켠 뒤 펜던트의 툴/TCP가 적용되지 않은 채 실행된 경우도 4번 있었음(정확한 조건은 미확인) | 시작할 때 수동 → 설정 → 자동. 실패하면 로봇을 움직이지 않고 종료 | 6 |
+| 첫 명령에서 응답 없이 멈춤 | 노드가 컨트롤러 서비스를 찾기 전에 보낸 요청이 유실됨 | `wait_for_service` 후 시작 | 7 |
+| 집는 위치에 서기 전에 곡선으로 다음 동작 시작 | 원본에서 가져온 블렌딩 반경 `radius=10` | 집기·놓기 구간은 `radius=0` | 3 |
+| DRL 인자를 그대로 쓸 수 없음 | ROS 2 `movel`에는 `app_type`이 없고, `set_velx`는 세 번째 인자가 없음 | 함수 정의와 대조해 인자 정리 | 1 |
+
+### 실로봇 디버깅 중에 생긴 문제 (테스트 값, 편집 실수, 힘제어 조합)
+
+| 증상 | 원인 | 고친 방법 | 항목 |
+|---|---|---|---|
+| 흔들기가 거부되고 힘이 2N 안팎에서 멈춤(브링업 알람 `TASK_MOTION_w_FORCE_CONTROL rejected event[eMove_Periodic]`, 오후 동안 10회) | 원본처럼 힘제어 중 Z 방향 `amovel`을 함께 보내면 컨트롤러가 "이동 중 + 힘제어" 상태로 남아 흔들기를 받지 않음 | `amovel`을 빼고 힘제어만으로 하강 → 이후 거부 없음 | 9 |
+| 흔들기가 즉시 반환되고 1초에 약 30번 다시 호출됨(`Acc.Time(0.500) should be smaller than 1/2 of total Time(1.000)`) | 테스트로 넣은 `atime=0.5, repeat=1`이 `atime < period×repeat/2` 규칙 위반 | `atime=0.3, repeat=2`, 흔들기 사이 2.5초 간격 | 10 |
+| 목표 -5N인데 약 -3.9N에서 더 커지지 않음 | (추정) 테스트로 힘을 낮추자 `DR_FC_MOD_REL`(켠 시점 측정값 기준 상대 힘)의 영향이 드러남. 이 실행(17:25)은 툴/TCP도 빠져 있어 원인을 확정하지 못함 | `DR_FC_MOD_ABS` | 8 |
+| 삽입 후 홈 복귀 거부(`TASK_FORCE_CONTROL rejected event[eMoveJ]`), 그런데 노드는 "작업 완료" 출력 | 코드를 고치다 `release_force`/`release_compliance_ctrl` 호출이 빠짐 | 그리퍼 열기 → 힘제어 해제 → 순응제어 해제 → 상승 → 홈 | 11 |
 
 ---
 
@@ -46,7 +70,7 @@
 | 17:15 ~ 18:27 | 흔들기 거부. 툴/TCP가 정상인 실행(17:51~18:27)에서도 힘이 3~4N까지 올랐다가 2N 안팎으로 떨어지고 Z가 84mm대에서 멈춰 15초 시간 초과 | 브링업 `rejected event[eMove_Periodic]`, 노드 로그 |
 | 18:23, 18:24 | 툴/TCP 설정 실패를 감지하고 로봇을 움직이지 않고 종료 | 노드 로그 |
 | 18:33 | 삽입 성공(Z 79.9mm), 홈 복귀 거부 | 브링업 `rejected event[eMoveJ]` |
-| **18:36** | **기어 4개 전체 성공, 홈 복귀. 알람 없음** | `run_20260916_1836_full_success.log` |
+| **18:36** | **기어 4개 전체 성공, 홈 복귀. 알람 없음** | [`run_20260916_1836_full_success.log`](logs/run_20260916_1836_full_success.log) |
 | 19:03 | 재실행. 로봇 네트워크가 끊긴 상태(18:54)라 진행되지 않아 중단 | 브링업 `Network is unreachable` |
 
 ---

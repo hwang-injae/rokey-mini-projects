@@ -3,7 +3,7 @@
 >
 > 최종 구현과 다른 점
 >
-> | 항목 | 이 문서(초기 설계) | 최종 구현 (`02_search_and_track/`) |
+> | 항목 | 이 문서(초기 설계) | 최종 구현 ([`src/rc_tracker/`](../src/rc_tracker/), [`src/rc_tracker_interfaces/`](../src/rc_tracker_interfaces/)) |
 > |---|---|---|
 > | PC 배치 | GPU PC 2대, `mission_trigger`는 PC B | GPU 노트북(Nav2·서버) + GPU 없는 웹캠 PC. `mission_trigger`는 웹캠 PC에서 `station.launch.py`로 실행 |
 > | 로봇 카메라 입력 | `rgb/preview` + `image_transport republish`로 depth 복원, 드라이버 해상도 맞춤(옵션 B) | 풀 RGB `rgb/image_raw/compressed` + `stereo/image_raw/compressedDepth`를 서버 안에서 직접 디코드하고 `ApproximateTimeSynchronizer`로 짝지음. 드라이버 설정은 바꾸지 않음 |

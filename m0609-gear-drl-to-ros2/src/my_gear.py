@@ -1,5 +1,5 @@
 # 티치 펜던트(Task Writer)로 만든 "m0609_homework_gear_1" 을 ROS 2 Python(DSR_ROBOT2)으로 옮긴 노드
-# 원본: ../drl/m0609_homework_gear_1.drl + ../drl/System.drvar
+# 원본: drl/m0609_homework_gear_1.drl + drl/System.drvar (이 파일 옆 drl/ 폴더)
 # 노드 실행 뼈대(DR_init 설정, DSR_ROBOT2 import, 예외 처리)는 수업 제공 템플릿 패턴을 따름
 #
 # 동작 흐름
@@ -7,7 +7,7 @@
 #   → 순응제어 + 힘제어(Z -5N, ABS)로 내려가며, 힘이 3~8N이면 Z축 회전(±10도) 흔들기로 맞물리기
 #   → Z가 80mm 이하로 내려가면 그리퍼 열기 → 힘제어·순응제어 해제 → 상승 후 홈 복귀
 #
-# 2026-09-16 18:36 실로봇 실행에서 끝까지 동작한 버전 (실행 로그: ../logs/run_20260916_1836_full_success.log)
+# 2026-09-16 18:36 실로봇 실행에서 끝까지 동작한 버전 (실행 로그: ../docs/logs/run_20260916_1836_full_success.log)
 # 목표 힘 -5N / 판정 3~8N / atime 0.3, repeat 2 는 디버깅 중 낮춘 값이며,
 # 원본 DRL 값(-10N / 7~12N / atime 1.0, repeat 3)으로 되돌린 재검증은 하지 않음
 

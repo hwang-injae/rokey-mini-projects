@@ -30,8 +30,8 @@ ros2 topic list | grep /robot2 | head          # 로봇 토픽이 보여야 함
 pip install ultralytics opencv-python numpy   # rosdep으로 설치되지 않음
 
 mkdir -p ~/rc_ws/src
-cp -r <repo>/tb4-rc-car-search-track/02_search_and_track/rc_tracker_interfaces ~/rc_ws/src/
-cp -r <repo>/tb4-rc-car-search-track/02_search_and_track/rc_tracker            ~/rc_ws/src/
+cp -r <repo>/tb4-rc-car-search-track/src/rc_tracker_interfaces ~/rc_ws/src/
+cp -r <repo>/tb4-rc-car-search-track/src/rc_tracker            ~/rc_ws/src/
 cd ~/rc_ws
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install

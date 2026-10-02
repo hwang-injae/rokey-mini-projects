@@ -21,11 +21,11 @@
 
 | 폴더 | 이름 | 핵심 아이디어 | 가르려던 가설 |
 |---|---|---|---|
-| `rc_tracker/` (기준판) | v0 | Nav2 `/spin` 360°, "화면 중앙에 가장 가까운 id 3연속" | 비교 기준 |
-| `search_variants/v1_slow_spin/` | v1 느린 회전 | `cmd_vel`로 직접 0.3 rad/s 저속 연속 회전 | 회전 속도 |
-| `search_variants/v2_step_scan/` | v2 끊어보기 | 30° 돌고 → 멈춰서 0.8 s 관찰 → 반복(12스텝) | 모션 블러·지연 |
-| `search_variants/v3_detect_confirm/` | v3 보이면 정지 | 저속 회전 중 RC가 처음 보이면 멈추고 최대 3 s 확인 | 빠른 탐지 + 정지 상태 확정 |
-| `search_variants/v4_rgb_only/` | v4 depth 없이 lock | v1과 같은 회전 + 탐색 중에는 RGB만으로 lock | depth 토픽 지연 (v1과 A/B) |
+| [`src/rc_tracker/`](../src/rc_tracker/) (기준판) | v0 | Nav2 `/spin` 360°, "화면 중앙에 가장 가까운 id 3연속" | 비교 기준 |
+| [`src/search_variants/v1_slow_spin/`](../src/search_variants/v1_slow_spin/SEARCH_VARIANT.md) | v1 느린 회전 | `cmd_vel`로 직접 0.3 rad/s 저속 연속 회전 | 회전 속도 |
+| [`src/search_variants/v2_step_scan/`](../src/search_variants/v2_step_scan/SEARCH_VARIANT.md) | v2 끊어보기 | 30° 돌고 → 멈춰서 0.8 s 관찰 → 반복(12스텝) | 모션 블러·지연 |
+| [`src/search_variants/v3_detect_confirm/`](../src/search_variants/v3_detect_confirm/SEARCH_VARIANT.md) | v3 보이면 정지 | 저속 회전 중 RC가 처음 보이면 멈추고 최대 3 s 확인 | 빠른 탐지 + 정지 상태 확정 |
+| [`src/search_variants/v4_rgb_only/`](../src/search_variants/v4_rgb_only/SEARCH_VARIANT.md) | v4 depth 없이 lock | v1과 같은 회전 + 탐색 중에는 RGB만으로 lock | depth 토픽 지연 (v1과 A/B) |
 
 각 변형은 기준판과 **`search_and_track_server.py`, `mission_params.yaml` 두 파일만** 다르다
 (`webcam_detector`, `mission_trigger`, `rc_tracker_interfaces`, launch, 모델은 동일).
@@ -111,7 +111,7 @@ SEARCHING 동안 0.4초마다 한 줄씩 남긴다.
 1. 기준판으로 빌드되는 워크스페이스를 준비한다 ([`run.md`](run.md) 1절).
 2. 시험할 변형의 파일 2개를 덮어쓴다.
    ```bash
-   V=<repo>/tb4-rc-car-search-track/02_search_and_track/search_variants/v2_step_scan
+   V=<repo>/tb4-rc-car-search-track/src/search_variants/v2_step_scan
    cp $V/search_and_track_server.py ~/rc_ws/src/rc_tracker/rc_tracker/
    cp $V/mission_params.yaml        ~/rc_ws/src/rc_tracker/config/
    cd ~/rc_ws && colcon build --symlink-install && source install/setup.bash
