@@ -1,0 +1,39 @@
+camera_node:
+  ros__parameters:
+    device_id: 0
+    publish_rate: 30.0
+    mirror: true
+
+gesture_node:
+  ros__parameters:
+    max_num_hands: 1
+    min_detection_confidence: 0.5
+    min_tracking_confidence: 0.5
+    hand_area_scale: 10.0
+
+object_tracking_node:
+  ros__parameters:
+    min_area_threshold: 300.0
+    hue_min1: 0
+    hue_max1: 10
+    hue_min2: 170
+    hue_max2: 179
+    sat_min: 60
+    sat_max: 255
+    val_min: 60
+    val_max: 255
+    kernel_size: 5
+    publish_rate: 30.0
+
+controller_node:
+  ros__parameters:
+    # 실제 웹캠+turtlesim 통합 테스트 결과 반영 (기존 0.001은 반응이 너무 느렸음).
+    linear_gain: 0.004
+    angular_gain: 0.004
+    target_area: 2000.0
+    area_deadband: 100.0
+    angular_deadband: 10.0
+    max_linear_speed: 2.0
+    max_angular_speed: 2.0
+    tracking_timeout_sec: 0.5
+
