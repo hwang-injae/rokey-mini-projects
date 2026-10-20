@@ -62,7 +62,7 @@ flowchart LR
 - **주기적 재발행**: 확정된 결과를 0.2초마다(5Hz) 다시 보내, 시뮬레이션 쪽이 늦게 켜지거나 통신이 잠깐 끊겨도 다시 받을 수 있게 합니다.
 - 카메라 토픽은 sensor data QoS(best effort)로 구독하고, 토픽 이름·ROI·최소 면적·디버그 창을 ROS 파라미터로 바꿀 수 있습니다.
 
-## 🙋 내가 한 것
+## 🙋 담당 역할
 
 가져온 노드를 우리 시나리오에 맞게 고치고 Isaac Sim과 연결했습니다 → [`src/m0609_color_detector.py`](src/m0609_color_detector.py)
 
