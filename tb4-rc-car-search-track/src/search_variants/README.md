@@ -1,6 +1,6 @@
 # 탐색 변형 v1~v4 (로봇 미검증)
 
-2026-09-03 통합 테스트에서 회전 탐색 중 RC카를 고정(lock)하지 못한 뒤, 원인 가설을 하나씩 가르려고 **탐색 방식만 바꾼** 변형이다.
+2026-09-03 통합 테스트에서 회전 탐색 중 RC카 목표 고정(lock)이 걸리지 않은 뒤, 원인 가설을 하나씩 가르려고 **탐색 방식만 바꾼** 변형이다.
 각 폴더에는 기준판(`../rc_tracker/`)과 다른 파일 2개(`search_and_track_server.py`, `mission_params.yaml`)와 설명(`SEARCH_VARIANT.md`)만 있다.
 
 - [`v1_slow_spin/`](v1_slow_spin/SEARCH_VARIANT.md) — `cmd_vel` 0.3 rad/s 저속 연속 회전
