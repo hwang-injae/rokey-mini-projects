@@ -23,7 +23,7 @@
 |---|---|
 | 구분 | ROKEY 9기 지능-1 팀 미니 프로젝트 |
 | 기간 | 2026년 8월 말 ~ 9월 초, 약 1주 |
-| 인원 · 담당 | 4인 팀 · 담당: 객체 탐지 — RC카 · 더미 박스 인식 모델(웹캠 · 로봇 카메라 공용), 웹캠 감지 · 트리거 노드, 로봇 카메라 인식 프로토타입 |
+| 인원 · 담당 | 4인 팀 · 담당: 객체 탐지 — RC카 · 더미 박스 인식 모델(웹캠 · 로봇 카메라 공용), 웹캠 감지 · 트리거 노드, 로봇 카메라 인식 프로토타입, 지도 생성(SLAM · 원격 조종) |
 | 환경 | ROS 2 Jazzy · TurtleBot4 (OAK-D, RPLIDAR) · Nav2 · USB 웹캠 · Ultralytics YOLO11n + ByteTrack |
 | 상태 | 🟡 개선 과제 남음 — 통합 테스트에서 탐색 위치까지 이동을 확인했고, 회전 탐색 중 RC카 목표 고정(lock)은 다음 단계로 남았습니다. 원인을 분리하기 위해 탐색 방식만 바꾼 v1~v4를 만들었고, 로봇 검증이 다음 단계입니다. |
 
@@ -64,13 +64,14 @@ flowchart LR
 
 ## 🙋 담당 역할
 
-팀은 시스템 통합 · 미션 관리(기술 리드), 내비게이션 · 회피, 브링업 · SLAM, 객체 탐지로 역할을 나눴습니다. 저는 객체 탐지를 맡아 RC카 · 더미 박스 인식(데이터 수집 · 라벨링 · 모델 선정 · 학습 · 평가)과 이를 쓰는 웹캠 · 로봇 카메라 쪽 인식 노드를 담당했습니다.
+팀은 시스템 통합 · 미션 관리(기술 리드), 내비게이션 · 회피, 브링업 · SLAM, 객체 탐지로 역할을 나눴습니다. 저는 객체 탐지를 맡아 RC카 · 더미 박스 인식(데이터 수집 · 라벨링 · 모델 선정 · 학습 · 평가)과 이를 쓰는 웹캠 · 로봇 카메라 쪽 인식 노드를 담당했고, 지도 생성도 함께 했습니다.
 
 1. **RC카 · 더미 박스 인식 모델** — 팀과 함께 RC카와 더미 박스를 촬영 · 라벨링하고, YOLO11n을 선정해 파인튜닝했습니다(`rc_dummy_y11n.pt` — 웹캠 감지 노드와 로봇 카메라 미션 서버가 같은 모델을 사용). → [`src/rc_tracker/models/`](src/rc_tracker/models/)
 2. **인식 프로토타입 노드 (09-01)** — 로봇 카메라 영상에 YOLO + ByteTrack을 붙여 RC카 · 더미 박스에 추적 ID를 부여하는 노드를 만들고, 로봇 정지 상태에서 동작을 확인했습니다. → [`src/tb4_yolo_tracker/`](src/tb4_yolo_tracker/), [`docs/perception_prototype.md`](docs/perception_prototype.md)
 3. **웹캠 감지 · 트리거 노드** — 웹캠 YOLO가 `RC`를 N프레임 연속으로 검출하면 latched `Bool`을 한 번 보내고, 이를 받아 액션 goal을 보내는 노드입니다(`webcam_detector`, `mission_trigger`).
-4. **통합 테스트와 현장 디버깅** — 09-03 통합 테스트에서 미션 서버(`search_and_track_server`)를 실제 로봇에 올려 시험하며 팀과 함께 찾은 문제를 반영했습니다(→ [트러블슈팅](#-트러블슈팅)). 언도킹 위치(x, y)를 `initial_pose`로, RViz에서 지정한 웹캠 감시 구역 중심을 `search_pose`로 넣었습니다(yaw는 추정치).
-5. **목표 고정이 안 된 원인을 분리하기 위한 탐색 변형 v1~v4** — 회전 속도, depth 토픽 지연, 모션 블러라는 가설 3개를 하나씩 검증할 수 있도록 탐색 방식만 바꾼 변형 4개와 판별용 `[SEARCH]` 로그를 만들었습니다. → [`src/search_variants/`](src/search_variants/), [`docs/search_variants.md`](docs/search_variants.md)
+4. **지도 생성** — SLAM과 원격 조종(teleop) 두 방법으로 TurtleBot4 지도를 만들었습니다.
+5. **통합 테스트와 현장 디버깅** — 09-03 통합 테스트에서 미션 서버(`search_and_track_server`)를 실제 로봇에 올려 시험하며 팀과 함께 찾은 문제를 반영했습니다(→ [트러블슈팅](#-트러블슈팅)). 언도킹 위치(x, y)를 `initial_pose`로, RViz에서 지정한 웹캠 감시 구역 중심을 `search_pose`로 넣었습니다(yaw는 추정치).
+6. **목표 고정이 안 된 원인을 분리하기 위한 탐색 변형 v1~v4** — 회전 속도, depth 토픽 지연, 모션 블러라는 가설 3개를 하나씩 검증할 수 있도록 탐색 방식만 바꾼 변형 4개와 판별용 `[SEARCH]` 로그를 만들었습니다. → [`src/search_variants/`](src/search_variants/), [`docs/search_variants.md`](docs/search_variants.md)
 
 **팀원 기여**: 미션 서버의 RGB-depth 시간 동기화(`ApproximateTimeSynchronizer`), `compressedDepth` 직접 디코드, 목표 앞 정지 위치(stand-off goal) 계산은 팀원이 추가했습니다. 로봇 TF 프레임 확인과 SLAM 가이드도 팀원 작업입니다.
 
